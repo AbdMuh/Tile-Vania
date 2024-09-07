@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9122979981215540752}
   - component: {fileID: 3191683054753837243}
   - component: {fileID: 1540676509224632088}
+  - component: {fileID: 6816394030799860881}
   m_Layer: 0
   m_Name: Ray
   m_TagString: Untagged
@@ -124,7 +125,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -201,3 +202,17 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &6816394030799860881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616475637685775217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b6e16aa0a741f42b39ce1e42d408ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  powerScaler: 0
+  jumpPower: 0
