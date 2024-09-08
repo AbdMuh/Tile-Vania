@@ -11,23 +11,30 @@ public class PlayerMovement : MonoBehaviour
     public float powerScaler;
     private Animator _animator;
     public float jumpPower;
+    public float climbPower;
     private CapsuleCollider2D _collider;
     private LayerMask _collidingLayer;
+    private LayerMask _climbingLayer;
+    private float _playerGravity;
 
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _collider = GetComponent<CapsuleCollider2D>();
+        _playerGravity = _rigidbody2D.gravityScale;
         _collidingLayer = LayerMask.GetMask("Platform");
+        _climbingLayer = LayerMask.GetMask("Climbing");
         powerScaler = 5.3f;
         jumpPower = 9.3f;
+        climbPower = 4.5f;
     }
 
     private void Update()
     {
         Run();
         FlipSprite();
+        ClimbLadder();
     }
 
     private void FlipSprite()
@@ -56,6 +63,22 @@ public class PlayerMovement : MonoBehaviour
     void OnMove(InputValue inputValue)
     {
         _inputVector = inputValue.Get<Vector2>();
-        Debug.Log(_inputVector);
+    }
+
+    private void ClimbLadder()
+    {
+        if (_collider.IsTouchingLayers(_climbingLayer))
+        {
+            _rigidbody2D.gravityScale = 0f;
+            _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x,_inputVector.y * climbPower);
+            bool isMoving = Mathf.Abs(_rigidbody2D.velocity.y) > Mathf.Epsilon;
+                _animator.SetBool("IsClimbing",isMoving);
+                
+        }
+        else
+        {
+            _rigidbody2D.gravityScale = _playerGravity;
+            _animator.SetBool("IsClimbing",false);
+        }
     }
 }

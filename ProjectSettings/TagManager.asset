@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - Platform
-  - 
+  - Climbing
   - 
   - 
   - 
@@ -49,6 +49,9 @@ TagManager:
     locked: 0
   - name: Platform
     uniqueID: 995654621
+    locked: 0
+  - name: Ladder
+    uniqueID: 232519081
     locked: 0
   - name: Ray
     uniqueID: 4258930073
