@@ -13,10 +13,10 @@ TagManager:
   - UI
   - Platform
   - Climbing
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Background
+  - Bouncing
+  - Enemy
   - 
   - 
   - 
@@ -52,6 +52,9 @@ TagManager:
     locked: 0
   - name: Ladder
     uniqueID: 232519081
+    locked: 0
+  - name: Enemy
+    uniqueID: 3426198571
     locked: 0
   - name: Ray
     uniqueID: 4258930073

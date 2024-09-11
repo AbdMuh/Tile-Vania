@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _collidingLayer;
     private LayerMask _climbingLayer;
     private float _playerGravity;
+    private readonly float _rayLength = 0.62f;
 
     private void Start()
     {
@@ -37,6 +38,12 @@ public class PlayerMovement : MonoBehaviour
         ClimbLadder();
     }
 
+    private bool IsGrounded()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayLength,_collidingLayer);
+        return hit.collider != null;
+    }
+    
     private void FlipSprite()
     {
        bool isMoving = Mathf.Abs(_rigidbody2D.velocity.x) > Mathf.Epsilon;
@@ -48,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJump(InputValue input)
     {
-        if (input.isPressed && _collider.IsTouchingLayers(_collidingLayer))
+        if (input.isPressed && IsGrounded())
         {
             _rigidbody2D.velocity += new Vector2(0f, jumpPower);
         }
