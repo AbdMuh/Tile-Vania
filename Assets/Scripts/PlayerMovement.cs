@@ -1,5 +1,5 @@
-
-using System;
+using System.Collections;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,21 +16,28 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _collidingLayer;
     private LayerMask _climbingLayer;
     private float _playerGravity;
+    private bool _isAlive;
     private readonly float _rayLength = 0.62f;
-
+    private PlayerInput _playerInput;
+    private SpriteRenderer _spriteRenderer;
+    
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        _isAlive = true;
         _animator = GetComponent<Animator>();
         _collider = GetComponent<CapsuleCollider2D>();
         _playerGravity = _rigidbody2D.gravityScale;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        
         _collidingLayer = LayerMask.GetMask("Platform");
+        _playerInput = GetComponent<PlayerInput>();
         _climbingLayer = LayerMask.GetMask("Climbing");
         powerScaler = 5.3f;
         jumpPower = 9.3f;
         climbPower = 4.5f;
     }
-
+    
     private void Update()
     {
         Run();
@@ -42,6 +49,25 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayLength,_collidingLayer);
         return hit.collider != null;
+    }
+    
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Enemy") && _isAlive)
+        {
+            _isAlive = false;
+            _playerInput.enabled = false;
+            gameObject.layer  = LayerMask.NameToLayer("NoCollidePlayer");
+            _animator.SetTrigger("IsDead"); 
+            StartCoroutine(SetVisibility(1.7f));
+
+        }
+    }
+
+    private IEnumerator SetVisibility(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _spriteRenderer.enabled = false;
     }
     
     private void FlipSprite()
