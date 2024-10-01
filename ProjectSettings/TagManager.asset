@@ -19,7 +19,7 @@ TagManager:
   - Bouncing
   - Enemy
   - NoCollidePlayer
-  - 
+  - Hazards
   - 
   - 
   - 
@@ -53,6 +53,9 @@ TagManager:
     locked: 0
   - name: Ladder
     uniqueID: 232519081
+    locked: 0
+  - name: Hazards
+    uniqueID: 3525653457
     locked: 0
   - name: Ray
     uniqueID: 4258930073

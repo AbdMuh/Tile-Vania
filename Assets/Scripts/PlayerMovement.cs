@@ -2,6 +2,7 @@ using System.Collections;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,21 +17,22 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _collidingLayer;
     private LayerMask _climbingLayer;
     private float _playerGravity;
-    private bool _isAlive;
+    private Scene _scene;
     private readonly float _rayLength = 0.62f;
     private PlayerInput _playerInput;
     private SpriteRenderer _spriteRenderer;
-    
+    private static readonly int IsDead = Animator.StringToHash("IsDead");
+
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _isAlive = true;
         _animator = GetComponent<Animator>();
         _collider = GetComponent<CapsuleCollider2D>();
         _playerGravity = _rigidbody2D.gravityScale;
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _scene = SceneManager.GetActiveScene();
         
-        _collidingLayer = LayerMask.GetMask("Platform");
+        _collidingLayer = LayerMask.GetMask("Platform","Hazards");
         _playerInput = GetComponent<PlayerInput>();
         _climbingLayer = LayerMask.GetMask("Climbing");
         powerScaler = 5.3f;
@@ -43,24 +45,51 @@ public class PlayerMovement : MonoBehaviour
         Run();
         FlipSprite();
         ClimbLadder();
+        
     }
 
-    private bool IsGrounded()
+    private void LevelRestart()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayLength,_collidingLayer);
-        return hit.collider != null;
+        SceneManager.LoadScene(_scene.name);
     }
+    private bool IsGrounded(int mode)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayLength, _collidingLayer);
     
+        if (mode == 1)
+        {
+            return hit.collider != null;
+        }
+
+        if (mode == 2)
+        {
+            if (hit.collider == null)
+            {
+                Debug.Log("Null Hazard collider");
+                return false; 
+            }
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Hazards"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void PlayerDeath()
+    {
+        _playerInput.enabled = false;
+        gameObject.layer  = LayerMask.NameToLayer("NoCollidePlayer");
+        _animator.SetTrigger(IsDead); 
+        StartCoroutine(SetVisibility(1.7f));
+    }
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Enemy") && _isAlive)
+        if ((other.gameObject.CompareTag("Enemy") || IsGrounded(2)))
         {
-            _isAlive = false;
-            _playerInput.enabled = false;
-            gameObject.layer  = LayerMask.NameToLayer("NoCollidePlayer");
-            _animator.SetTrigger("IsDead"); 
-            StartCoroutine(SetVisibility(1.7f));
-
+            Debug.Log("PlayerDeath Entered");
+            PlayerDeath();
         }
     }
 
@@ -68,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         _spriteRenderer.enabled = false;
+        LevelRestart();
     }
     
     private void FlipSprite()
@@ -81,7 +111,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJump(InputValue input)
     {
-        if (input.isPressed && IsGrounded())
+        if (input.isPressed && IsGrounded(1))
         {
             _rigidbody2D.velocity += new Vector2(0f, jumpPower);
         }
