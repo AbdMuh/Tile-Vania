@@ -10,6 +10,7 @@ public class EnemyMovement : MonoBehaviour
     private float _flipCoolDown=0.2f;
     private bool _canFlip = true;
     private Vector2 _RayDirection = Vector2.right;
+    private int _bulletCount;
 
     public Vector2 moveSpeed= new Vector2(1.3f,0f);
     // Start is called before the first frame update
@@ -31,6 +32,7 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         _rigidbody2D.velocity = moveSpeed;
+        DeathChecker();
         // Debug.DrawRay(transform.position, _RayDirection *_rayLength, Color.red);
         RaycastHit2D hit = Physics2D.Raycast(transform.position, _RayDirection, _rayLength, _collidingLayer);
         if (hit.collider != null && _canFlip)
@@ -44,7 +46,23 @@ public class EnemyMovement : MonoBehaviour
     {
             moveSpeed = -moveSpeed;
     }
+    
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Bullet"))
+        {
+            _bulletCount++;
+            Destroy(other.gameObject);
+        }
+    }
 
+    private void DeathChecker()
+    {
+        if (_bulletCount == 3)
+        {
+            Destroy(gameObject);
+        }
+    }
     private IEnumerator FlipCoolDown()
     {
         _canFlip = false;
