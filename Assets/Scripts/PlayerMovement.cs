@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     private PlayerInput _playerInput;
     private SpriteRenderer _spriteRenderer;
     private static readonly int IsDead = Animator.StringToHash("IsDead");
+    private GameObject _bullet;
+    private GameObject _gun;
 
     private void Start()
     {
@@ -30,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
         _collider = GetComponent<CapsuleCollider2D>();
         _playerGravity = _rigidbody2D.gravityScale;
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _bullet = GameObject.Find("Bullet");
+        _gun = GameObject.Find("GunSpawn");
         _scene = SceneManager.GetActiveScene();
         
         _collidingLayer = LayerMask.GetMask("Platform","Hazards");
@@ -114,6 +118,14 @@ public class PlayerMovement : MonoBehaviour
         if (input.isPressed && IsGrounded(1))
         {
             _rigidbody2D.velocity += new Vector2(0f, jumpPower);
+        }
+    }
+    private void OnFire(InputValue input)
+    {
+        if (input.isPressed)
+        {
+            Instantiate(_bullet, _gun.transform.position, Quaternion.identity);
+            Debug.Log("Bullet fired");
         }
     }
     private void Run()
