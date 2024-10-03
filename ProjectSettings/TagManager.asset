@@ -23,7 +23,7 @@ TagManager:
   - Hazards
   - Bullet
   - Enemy Rotation Trigger
-  - 
+  - Exit
   - 
   - 
   - 
@@ -69,4 +69,7 @@ TagManager:
     locked: 0
   - name: Bullet
     uniqueID: 833915615
+    locked: 0
+  - name: Exit
+    uniqueID: 3355632991
     locked: 0
