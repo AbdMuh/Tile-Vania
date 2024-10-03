@@ -51,6 +51,7 @@ public class EnemyMovement : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bullet"))
         {
+            AudioManager.Instance.PlayEffect(4);
             _bulletCount++;
             Destroy(other.gameObject);
         }

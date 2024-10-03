@@ -70,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+    
 
 
     private void PlayerDeath()
@@ -85,6 +86,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("PlayerDeath Entered");
             PlayerDeath();
+        }
+
+        if (other.gameObject.CompareTag("Bounce"))
+        {
+            AudioManager.Instance.PlayEffect(2);
         }
     }
 
@@ -117,6 +123,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (input.isPressed)
         {
+            AudioManager.Instance.PlayEffect(3);
             Instantiate(_bullet, _gun.transform.position, Quaternion.identity);
             Debug.Log("Bullet fired");
         }

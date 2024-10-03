@@ -20,6 +20,7 @@ public class LevelProgression : MonoBehaviour
         player.GetComponent<PlayerMovement>().enabled = false;
         yield return new WaitForSeconds(1.3f);
         int scene = SceneManager.GetActiveScene().buildIndex;
+        ScenePersist.Instance.SceneReset();
         scene++;
         if (scene == 3)
         {
