@@ -6,19 +6,21 @@ using UnityEngine;
 public class GameSession : MonoBehaviour
 {
     public int playerLives = 3;
+    public static GameSession Instance;
     void Awake()
+    
     {
-        int numGameSessions = FindObjectsOfType<GameSession>().Length; 
         // RETURNS LENGTH OF ARRAY
-        if(numGameSessions > 1)
+        if(Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
         {
             // IF THERE IS MORE THAN ONE GAMESESSION OBJECT
             // THEN DESTROY THE NEWLY CREATED GAMESESSION OBJECT
             Destroy(gameObject);
-        }
-        else
-        {
-            DontDestroyOnLoad(gameObject);
         }
     }
     

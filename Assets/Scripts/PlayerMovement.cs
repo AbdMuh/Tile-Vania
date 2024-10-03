@@ -1,8 +1,8 @@
 using System.Collections;
-using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,7 +17,6 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _collidingLayer;
     private LayerMask _climbingLayer;
     private float _playerGravity;
-    private Scene _scene;
     private readonly float _rayLength = 0.62f;
     private PlayerInput _playerInput;
     private SpriteRenderer _spriteRenderer;
@@ -32,7 +31,6 @@ public class PlayerMovement : MonoBehaviour
         _collider = GetComponent<CapsuleCollider2D>();
         _playerGravity = _rigidbody2D.gravityScale;
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _scene = SceneManager.GetActiveScene();
         
         _collidingLayer = LayerMask.GetMask("Platform","Hazards");
         _playerInput = GetComponent<PlayerInput>();
@@ -94,7 +92,8 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         _spriteRenderer.enabled = false;
-        FindObjectOfType<GameSession>().ProcessPlayerDeath();
+        GameSession.Instance.ProcessPlayerDeath();
+        
     }
     
     private void FlipSprite()
@@ -110,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (input.isPressed && IsGrounded(1))
         {
+            AudioManager.Instance.PlayEffect(1);
             _rigidbody2D.velocity += new Vector2(0f, jumpPower);
         }
     }
