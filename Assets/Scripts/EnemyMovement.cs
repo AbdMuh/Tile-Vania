@@ -17,7 +17,7 @@ public class EnemyMovement : MonoBehaviour
     void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _collidingLayer = LayerMask.GetMask("Platform");
+        _collidingLayer = LayerMask.GetMask("Platform", "Enemy Rotation Trigger");
     }
 
     private void FacingWallFlip()

@@ -22,7 +22,7 @@ TagManager:
   - NoCollidePlayer
   - Hazards
   - Bullet
-  - 
+  - Enemy Rotation Trigger
   - 
   - 
   - 
@@ -42,6 +42,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Enemy Rotation Triggers
+    uniqueID: 2197380039
     locked: 0
   - name: Background
     uniqueID: 753255897
