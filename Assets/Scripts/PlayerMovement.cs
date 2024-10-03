@@ -49,11 +49,6 @@ public class PlayerMovement : MonoBehaviour
         ClimbLadder();
         
     }
-
-    private void LevelRestart()
-    {
-        SceneManager.LoadScene(_scene.name);
-    }
     private bool IsGrounded(int mode)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayLength, _collidingLayer);
@@ -99,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         _spriteRenderer.enabled = false;
-        LevelRestart();
+        FindObjectOfType<GameSession>().ProcessPlayerDeath();
     }
     
     private void FlipSprite()
