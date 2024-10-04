@@ -1,4 +1,3 @@
-Here is an improved version of the `README.md` file for the Tile-Vania repository:
 
 ---
 
