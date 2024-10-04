@@ -12,11 +12,6 @@ Here is an improved version of the `README.md` file for the Tile-Vania repositor
 - [Player Experience](#player-experience)
 - [Game Loop](#game-loop)
 - [Game Objectives](#game-objectives)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Description
 
@@ -53,36 +48,3 @@ Tile-Vania is an engaging 2D platformer game where players navigate through comp
 - **Secondary Objective**: Collect all coins to maximize your score.
 - **Survival Objective**: Complete all 5 levels with the 3 lives provided. Losing all lives restarts the game from level 1.
 
-## Installation
-
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/AbdMuh/Tile-Vania.git
-   ```
-2. Open the project in Unity.
-
-## Usage
-
-- Use the arrow keys or WASD to move Ray.
-- Press the spacebar to jump.
-- Use the mouse or specific key to fire Ray's gun.
-
-## Screenshots
-
-_Add screenshots or GIFs of the game here to showcase gameplay._
-
-## Contributing
-
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/feature-name`).
-3. Commit your changes (`git commit -m 'Add some feature'`).
-4. Push to the branch (`git push origin feature/feature-name`).
-5. Open a pull request.
-
-## License
-
-This project is licensed under the MIT License.
-
----
-
-Feel free to copy and paste this improved version into your `README.md` file.
