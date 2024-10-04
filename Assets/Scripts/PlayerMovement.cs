@@ -17,8 +17,8 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _collidingLayer;
     private LayerMask _climbingLayer;
     private float _playerGravity;
-    private readonly float _rayLength = 0.5f;
-    private Vector2 _boxSize;
+    private readonly float _rayLength = 0.25f;
+    // private Vector2 _boxSize;
     private float _angle = 0f;
     private PlayerInput _playerInput;
     private SpriteRenderer _spriteRenderer;
@@ -27,17 +27,19 @@ public class PlayerMovement : MonoBehaviour
     public GameObject _gun;
     private static readonly int IsRunning = Animator.StringToHash("IsRunning");
     private static readonly int IsClimbing = Animator.StringToHash("IsClimbing");
+    // private TrailRenderer _trailRenderer;
 
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _collider = GetComponent<CapsuleCollider2D>();
-        _boxSize = new Vector2(0.35f, 0.2f);
+        // _boxSize = new Vector2(0.35f, 0.2f);
         _playerGravity = _rigidbody2D.gravityScale;
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        // _trailRenderer = GetComponent<TrailRenderer>();
         
-        _collidingLayer = LayerMask.GetMask("Platform","Hazards");
+        _collidingLayer = LayerMask.GetMask("Platform","Hazards","Bouncing");
         _playerInput = GetComponent<PlayerInput>();
         _climbingLayer = LayerMask.GetMask("Climbing");
         powerScaler = 5.3f;
@@ -54,38 +56,32 @@ public class PlayerMovement : MonoBehaviour
     }
     private bool IsGrounded(int mode)
     {
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, _boxSize, _angle, Vector2.down, _rayLength, _collidingLayer);
+        // Perform the BoxCast slightly adjusted to avoid false detection when near walls
+        RaycastHit2D hit = Physics2D.BoxCast(_collider.bounds.center,
+            _collider.bounds.size - new Vector3(0.2f, 0, 0),_angle,Vector2.down,_rayLength,_collidingLayer);
 
-    
-        if (mode == 1)
+        switch (mode)
         {
-            Debug.Log(hit.collider!=null);
-            return hit.collider != null;
-        }
+            case 1:  
+                Debug.Log("Mode 1 (Normal Ground): " + (hit.collider != null));
+                return hit.collider != null;
 
-        if (mode == 2)
-        {
-            if (hit.collider == null)
-            {
-                Debug.Log("Null Hazard collider");
-                return false; 
-            }
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Hazards"))
-            {
-                Debug.Log("Hazard Collider Not Null");
-                return true;
-            }
+            case 2:  
+                if (hit.collider != null && hit.collider.gameObject.layer == LayerMask.NameToLayer("Hazards"))
+                {
+                    return true;
+                }
+                return false;
+            default:
+                return false;
         }
-        return false;
     }
-    
-
 
     private void PlayerDeath()
     {
         _playerInput.enabled = false;
         gameObject.layer  = LayerMask.NameToLayer("NoCollidePlayer");
-        _animator.SetTrigger(IsDead); 
+        _animator.SetTrigger(IsDead);
         StartCoroutine(SetVisibility(1.7f));
     }
     private void OnCollisionEnter2D(Collision2D other)
@@ -95,13 +91,21 @@ public class PlayerMovement : MonoBehaviour
             // Debug.Log("PlayerDeath Entered");
             PlayerDeath();
         }
-
-        if (other.gameObject.CompareTag("Bounce"))
-        {
-            AudioManager.Instance.PlayEffect(2);
-        }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bounce"))
+        {
+            if (_rigidbody2D != null)
+            {
+                _rigidbody2D.velocity =  new Vector2(_rigidbody2D.velocity.x, Mathf.Clamp(Mathf.Abs(_rigidbody2D.velocity.magnitude) * 2, 5f, 17f));
+                Debug.Log("2x: "+_rigidbody2D.velocity.y);
+                
+                AudioManager.Instance.PlayEffect(2);
+            }
+        }
+    }
     private IEnumerator SetVisibility(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -121,12 +125,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnJump(InputValue input)
     {
-        if (input.isPressed && IsGrounded(1))
+        if (input.isPressed)
         {
-            AudioManager.Instance.PlayEffect(1);
-            _rigidbody2D.velocity += new Vector2(0f, jumpPower);
+            if (IsGrounded(1))
+            {
+                // Single jump if grounded normally (mode 1)
+                AudioManager.Instance.PlayEffect(1);  // Use a different sound effect if needed
+                _rigidbody2D.velocity += new Vector2(0f, jumpPower);  // Regular jump power
+            }
         }
     }
+
     private void OnFire(InputValue input)
     {
         if (input.isPressed)
