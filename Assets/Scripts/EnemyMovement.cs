@@ -22,7 +22,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void FacingWallFlip()
     {
-            Debug.Log("Collided");
+            // Debug.Log("Collided");
             FlipSpeed();
             transform.localScale = new Vector2(transform.localScale.x*-1f, 1f);
             _RayDirection *= -1;

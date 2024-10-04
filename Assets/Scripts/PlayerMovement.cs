@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
+
 
 
 public class PlayerMovement : MonoBehaviour
@@ -17,18 +17,23 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask _collidingLayer;
     private LayerMask _climbingLayer;
     private float _playerGravity;
-    private readonly float _rayLength = 0.62f;
+    private readonly float _rayLength = 0.5f;
+    private Vector2 _boxSize;
+    private float _angle = 0f;
     private PlayerInput _playerInput;
     private SpriteRenderer _spriteRenderer;
     private static readonly int IsDead = Animator.StringToHash("IsDead");
-   public GameObject _bullet;
+    public GameObject _bullet;
     public GameObject _gun;
+    private static readonly int IsRunning = Animator.StringToHash("IsRunning");
+    private static readonly int IsClimbing = Animator.StringToHash("IsClimbing");
 
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _collider = GetComponent<CapsuleCollider2D>();
+        _boxSize = new Vector2(0.35f, 0.2f);
         _playerGravity = _rigidbody2D.gravityScale;
         _spriteRenderer = GetComponent<SpriteRenderer>();
         
@@ -49,10 +54,12 @@ public class PlayerMovement : MonoBehaviour
     }
     private bool IsGrounded(int mode)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _rayLength, _collidingLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, _boxSize, _angle, Vector2.down, _rayLength, _collidingLayer);
+
     
         if (mode == 1)
         {
+            Debug.Log(hit.collider!=null);
             return hit.collider != null;
         }
 
@@ -65,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Hazards"))
             {
+                Debug.Log("Hazard Collider Not Null");
                 return true;
             }
         }
@@ -84,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if ((other.gameObject.CompareTag("Enemy") || IsGrounded(2)))
         {
-            Debug.Log("PlayerDeath Entered");
+            // Debug.Log("PlayerDeath Entered");
             PlayerDeath();
         }
 
@@ -125,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
         {
             AudioManager.Instance.PlayEffect(3);
             Instantiate(_bullet, _gun.transform.position, Quaternion.identity);
-            Debug.Log("Bullet fired");
+            // Debug.Log("Bullet fired");
         }
     }
     private void Run()
@@ -133,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
         _velocityVector = new Vector2(_inputVector.x * powerScaler , _rigidbody2D.velocity.y);
         _rigidbody2D.velocity = _velocityVector;
         bool isMoving = Mathf.Abs(_rigidbody2D.velocity.x) > Mathf.Epsilon;
-        _animator.SetBool("IsRunning", isMoving);   
+        _animator.SetBool(IsRunning, isMoving);   
     }
     void OnMove(InputValue inputValue)
     {
@@ -147,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody2D.gravityScale = 0f;
             _rigidbody2D.velocity = new Vector2(_rigidbody2D.velocity.x,_inputVector.y * climbPower);
             bool isMoving = Mathf.Abs(_rigidbody2D.velocity.y) > Mathf.Epsilon;
-                _animator.SetBool("IsClimbing",isMoving);
+                _animator.SetBool(IsClimbing,isMoving);
                 
         }
         else
