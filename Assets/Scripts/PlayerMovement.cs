@@ -119,7 +119,7 @@ public class PlayerMovement : MonoBehaviour
        bool isMoving = Mathf.Abs(_rigidbody2D.velocity.x) > Mathf.Epsilon;
         if (isMoving)
         {
-            transform.localScale = new Vector2(Mathf.Sign(_rigidbody2D.velocity.x), 1f); 
+            transform.localScale = new Vector2(Mathf.Sign(_rigidbody2D.velocity.x), transform.localScale.y); 
         }
     }
 
