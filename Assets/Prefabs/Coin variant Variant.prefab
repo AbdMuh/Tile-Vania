@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0.7735849
       objectReference: {fileID: 0}
+    - target: {fileID: 779436859625515095, guid: b99eb0fcd0cf6764e9480a71588ee32f, type: 3}
+      propertyPath: scoretoAdd
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 1023868573308061419, guid: b99eb0fcd0cf6764e9480a71588ee32f, type: 3}
       propertyPath: m_Name
       value: Coin variant Variant

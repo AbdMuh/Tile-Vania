@@ -5,6 +5,8 @@ using UnityEngine;
 public class CoinPickUp : MonoBehaviour
 {
     bool hasPickedUp = false;
+
+    [SerializeField] private int scoretoAdd;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +22,7 @@ public class CoinPickUp : MonoBehaviour
         if (other.gameObject.CompareTag("Player") && !hasPickedUp)
         {
             hasPickedUp = true;
-            GameSession.Instance.AddToScore(10);
+            GameSession.Instance.AddToScore(scoretoAdd);
             Debug.Log("Playing effect");
             AudioManager.Instance.PlayEffect(0);
             Destroy(gameObject);
